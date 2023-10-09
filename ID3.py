@@ -29,6 +29,31 @@ def evaluate(node, example):
   assigns to the example.
   '''
 
+def get_information_gain(dataset, attribute):
+  sub_dataset = get_sub_datasets_by_attribute(dataset, attribute)
+  parent_entropy = get_entropy(dataset)
+  child_entropy = 0
+
+  for s in sub_dataset:
+    child_entropy += (len(s) / len(dataset)) * get_entropy(s)
+  
+  return parent_entropy - child_entropy
+  
+
+def get_sub_datasets_by_attribute(dataset, attribute):
+  sub_datasets = {}
+
+  for d in dataset:
+    if attribute not in d:
+      continue
+
+    if d[attribute] not in sub_dataset:
+      sub_datasets[d[attribute]] = []
+
+    sub_datasets[d[attribute]].append(d)
+
+  return list(sub_datasets.values())
+
 
 def get_entropy(dataset):
   target_class_probability = get_target_class_probability(dataset)
@@ -64,4 +89,3 @@ def get_target_class_frequencies(dataset):
       target_class_frequencies[v] += 1
 
   return target_class_frequencies
-
