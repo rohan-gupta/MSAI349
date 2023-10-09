@@ -1,5 +1,6 @@
 from node import Node
 import math
+import json
 
 def ID3(examples, default):
   '''
@@ -29,15 +30,38 @@ def evaluate(node, example):
   '''
 
 
-def get_all_attributes(dataset):
-  pass
-
-def get_most_common_target_class(dataset):
-  pass
-
-def get_information_gain(dataset):
-  pass
-
 def get_entropy(dataset):
-  pass
+  target_class_probability = get_target_class_probability(dataset)
+  H = 0
+
+  for k, v in target_class_probability.items():
+    H += -1 * v * math.log2(v)
+
+  return H
+
+
+def get_target_class_probabilities(dataset):
+  target_class_frequencies = target_class_frequencies(dataset)
+  probabilities = {}
+
+  for k, v in target_class_frequencies.items():
+    probabilities[k] = v / len(dataset)
+
+  return probabilities
+
+
+def get_target_class_frequencies(dataset):
+  target_class_frequencies = {}
+  
+  for d in dataset:
+    for k, v in d.items():
+      if k != "Class":
+        continue
+
+      if v not in target_class_frequencies:
+        target_class_frequencies[v] = 0
+
+      target_class_frequencies[v] += 1
+
+  return target_class_frequencies
 
