@@ -27,3 +27,17 @@ def evaluate(node, example):
   Takes in a tree and one example.  Returns the Class value that the tree
   assigns to the example.
   '''
+
+
+def get_all_attributes(dataset):
+  pass
+
+def get_most_common_target_class(dataset):
+  pass
+
+def get_information_gain(dataset):
+  pass
+
+def get_entropy(dataset):
+  pass
+
