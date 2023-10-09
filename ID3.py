@@ -89,3 +89,41 @@ def get_target_class_frequencies(dataset):
       target_class_frequencies[v] += 1
 
   return target_class_frequencies
+
+
+def get_decision_tree(root, ptr, dataset):
+
+  # check for empty dataset
+
+  # check for positive/negative examples
+
+  # get information gain by attribute
+
+  # select best attribute for split
+
+  # generate child nodes
+
+
+def is_dataset_empty(dataset):
+  pass
+
+
+def is_dataset_positive(dataset):
+  pass
+
+
+def is_dataset_negative(dataset):
+  pass
+
+
+def get_all_attributes(dataset):
+  all_attributes = set()
+
+  for d in dataset:
+    for k in d:
+      if k == "Class":
+        continue
+      
+      all_attributes.add(k)
+
+  return list(all_attributes)
