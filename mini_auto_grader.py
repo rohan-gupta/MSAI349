@@ -3,7 +3,7 @@ import ID3, parse, random
 def mini_grader():
 
   data = [dict(a=1, b=0, Class=1), dict(a=1, b=1, Class=1)]
-
+  data = parse.parse("tennis.data")
   try:
     tree = ID3.ID3(data, 0)
     if tree != None:
@@ -18,7 +18,7 @@ def mini_grader():
     print("ID3 test 1 failed runtime error")
 
   data = [dict(a=1, b=0, Class=0), dict(a=1, b=1, Class=1)]
-
+  data = parse.parse("tennis.data")
   try:
     tree = ID3.ID3(data, 0)
     if tree != None:
@@ -36,7 +36,7 @@ def mini_grader():
   data = [dict(a=1, b=0, Class=2), dict(a=1, b=1, Class=1),
           dict(a=2, b=0, Class=2), dict(a=2, b=1, Class=3),
           dict(a=3, b=0, Class=1), dict(a=3, b=1, Class=3)]
-
+  data = parse.parse("tennis.data")
   try:
     tree = ID3.ID3(data, 0)
     if tree != None:
@@ -58,7 +58,7 @@ def mini_grader():
   data = [dict(a=1, b=0, c='?', Class=1), dict(a=1, b=3, c=2, Class=1),
          dict(a=2, b='?', c=1, Class=2), dict(a=2, b=1, c=3, Class=2),
          dict(a=3, b=0, c=1, Class=3), dict(a=3, b=2, c='?', Class=3)]
-
+  data = parse.parse("tennis.data")
   try:
     tree = ID3.ID3(data, 0)
     if tree != None:
