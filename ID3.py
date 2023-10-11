@@ -9,12 +9,18 @@ def ID3(examples, default):
   and the target class variable is a special attribute with the name "Class".
   Any missing attributes are denoted with a value of "?"
   '''
+  root = Node("", {})
+  get_decision_tree(root, examples)
+
+  return root
+
 
 def prune(node, examples):
   '''
   Takes in a trained tree and a validation set of examples.  Prunes nodes in order
   to improve accuracy on the validation data; the precise pruning strategy is up to you.
   '''
+
 
 def test(node, examples):
   '''
@@ -28,6 +34,7 @@ def evaluate(node, example):
   Takes in a tree and one example.  Returns the Class value that the tree
   assigns to the example.
   '''
+
 
 def get_information_gain(dataset, attribute):
   sub_dataset = get_sub_datasets_by_attribute(dataset, attribute)
@@ -47,7 +54,7 @@ def get_sub_datasets_by_attribute(dataset, attribute):
     if attribute not in d:
       continue
 
-    if d[attribute] not in sub_dataset:
+    if d[attribute] not in sub_datasets:
       sub_datasets[d[attribute]] = []
 
     sub_datasets[d[attribute]].append(d)
@@ -56,17 +63,17 @@ def get_sub_datasets_by_attribute(dataset, attribute):
 
 
 def get_entropy(dataset):
-  target_class_probability = get_target_class_probability(dataset)
+  target_class_probabilities = get_target_class_probabilities(dataset)
   H = 0
 
-  for k, v in target_class_probability.items():
+  for k, v in target_class_probabilities.items():
     H += -1 * v * math.log2(v)
 
   return H
 
 
 def get_target_class_probabilities(dataset):
-  target_class_frequencies = target_class_frequencies(dataset)
+  target_class_frequencies = get_target_class_frequencies(dataset)
   probabilities = {}
 
   for k, v in target_class_frequencies.items():
@@ -91,29 +98,30 @@ def get_target_class_frequencies(dataset):
   return target_class_frequencies
 
 
-def get_decision_tree(root, ptr, dataset):
-
-  # check for empty dataset
-
-  # check for positive/negative examples
-
-  # get information gain by attribute
-
-  # select best attribute for split
-
-  # generate child nodes
-
-
 def is_dataset_empty(dataset):
-  pass
+  return not dataset
 
 
 def is_dataset_positive(dataset):
-  pass
+  for d in dataset:
+    if "Class" not in d:
+      continue
+
+    if d["Class"] == 0:
+      return False
+
+  return True
 
 
 def is_dataset_negative(dataset):
-  pass
+  for d in dataset:
+    if "Class" not in d:
+      continue
+
+    if d["Class"] == 1:
+      return False
+
+  return True
 
 
 def get_all_attributes(dataset):
@@ -127,3 +135,44 @@ def get_all_attributes(dataset):
       all_attributes.add(k)
 
   return list(all_attributes)
+
+
+def get_best_attribute_by_max_information_gain(dataset):
+  attributes = get_all_attributes(dataset)
+
+  best_attribute = ""
+  best_attribute_information_gain = -1
+
+  for a in attributes:
+    temp = get_information_gain(dataset, a)
+
+    if temp > best_attribute_information_gain:
+      best_attribute = a
+      best_attribute_information_gain = temp
+  
+  return best_attribute
+
+
+def get_decision_tree(ptr, dataset):
+  if is_dataset_empty(dataset):
+    return None
+
+  if is_dataset_positive(dataset):
+    ptr.label = "+"
+    return ptr
+
+  if is_dataset_negative(dataset):
+    ptr.label = "-"
+    return ptr
+
+  attribute = get_best_attribute_by_max_information_gain(dataset)
+  sub_dataset_by_attribute = get_sub_datasets_by_attribute(dataset, attribute)
+  
+  ptr.label = attribute
+
+  for s in sub_dataset_by_attribute:
+    branch = s[0][attribute]
+    ptr.children[branch] = Node("", {})
+    get_decision_tree(ptr.children[branch], s)
+  
+  return ptr
