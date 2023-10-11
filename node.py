@@ -1,5 +1,4 @@
 class Node:
-  def __init__(self):
-    self.label = None
-    self.children = {}
-	# you may want to add additional fields here...
+  def __init__(self, label = "", children = {}):
+    self.label = label
+    self.children = children
