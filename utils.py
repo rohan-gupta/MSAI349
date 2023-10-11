@@ -43,26 +43,16 @@ def is_dataset_empty(dataset):
   return not dataset
 
 
-def is_dataset_positive(dataset):
+def is_dataset_trivial(dataset):
+  classes = set()
+
   for d in dataset:
     if "Class" not in d:
       continue
 
-    if d["Class"] == 0:
-      return False
+    classes.add(d["Class"])
 
-  return True
-
-
-def is_dataset_negative(dataset):
-  for d in dataset:
-    if "Class" not in d:
-      continue
-
-    if d["Class"] == 1:
-      return False
-
-  return True
+  return len(classes) == 1
 
 
 def get_all_attributes(dataset):
@@ -76,3 +66,51 @@ def get_all_attributes(dataset):
       all_attributes.add(k)
 
   return list(all_attributes)
+
+
+def get_all_target_classes(dataset):
+  all_classes = set()
+
+  for d in dataset:
+    if "Class" not in d:
+      continue
+
+    all_classes.add(d["Class"])
+
+  return list(all_classes)
+
+
+def get_majority_class(dataset):
+  target_class_frequencies = get_target_class_frequencies(dataset)
+  majority_class = ""
+  majority_freq = 0
+  
+  for k, v in target_class_frequencies.items():
+    if v > majority_freq:
+      majority_class = k
+      majority_freq = v
+
+  return majority_class
+
+
+def get_non_trivial_attribute(dataset):
+  attributes = {}
+  
+  for d in dataset:
+    for k, v in d.items():
+      if k == "Class":
+        continue
+      
+      if k not in attributes:
+        attributes[k] = set()
+
+      attributes[k].add(v)
+
+      if len(attributes[k]) > 1:
+        return k
+      
+  return ""
+
+
+def update_missing_attributes_with_majority_value(dataset):
+  pass
