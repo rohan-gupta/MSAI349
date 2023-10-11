@@ -10,6 +10,7 @@ def ID3(examples, default):
   Any missing attributes are denoted with a value of "?"
   '''
   root = Node("", {})
+
   get_decision_tree(root, examples)
 
   return root
@@ -27,6 +28,16 @@ def test(node, examples):
   Takes in a trained tree and a test set of examples.  Returns the accuracy (fraction
   of examples the tree classifies correctly).
   '''
+  
+  correct_labels = 0
+
+  for e in examples:
+    label = evaluate(node, e)
+    
+    if label == e["Class"]:
+      correct_labels += 1
+
+  return correct_labels / len(examples)
 
 
 def evaluate(node, example):
@@ -34,6 +45,12 @@ def evaluate(node, example):
   Takes in a tree and one example.  Returns the Class value that the tree
   assigns to the example.
   '''
+
+  while node.label != "+" and node.label != "-":
+    branch = example[node.label]
+    node = node.children[branch]
+
+  return 1 if node.label == "+" else 0
 
 
 def get_information_gain(dataset, attribute):
@@ -66,7 +83,7 @@ def get_entropy(dataset):
   target_class_probabilities = get_target_class_probabilities(dataset)
   H = 0
 
-  for k, v in target_class_probabilities.items():
+  for _, v in target_class_probabilities.items():
     H += -1 * v * math.log2(v)
 
   return H
