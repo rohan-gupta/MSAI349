@@ -1,6 +1,7 @@
 from node import Node
 import math
-import json
+
+from utils import *
 
 def ID3(examples, default):
   '''
@@ -53,123 +54,6 @@ def evaluate(node, example):
   return 1 if node.label == "+" else 0
 
 
-def get_information_gain(dataset, attribute):
-  sub_dataset = get_sub_datasets_by_attribute(dataset, attribute)
-  parent_entropy = get_entropy(dataset)
-  child_entropy = 0
-
-  for s in sub_dataset:
-    child_entropy += (len(s) / len(dataset)) * get_entropy(s)
-  
-  return parent_entropy - child_entropy
-  
-
-def get_sub_datasets_by_attribute(dataset, attribute):
-  sub_datasets = {}
-
-  for d in dataset:
-    if attribute not in d:
-      continue
-
-    if d[attribute] not in sub_datasets:
-      sub_datasets[d[attribute]] = []
-
-    sub_datasets[d[attribute]].append(d)
-
-  return list(sub_datasets.values())
-
-
-def get_entropy(dataset):
-  target_class_probabilities = get_target_class_probabilities(dataset)
-  H = 0
-
-  for _, v in target_class_probabilities.items():
-    H += -1 * v * math.log2(v)
-
-  return H
-
-
-def get_target_class_probabilities(dataset):
-  target_class_frequencies = get_target_class_frequencies(dataset)
-  probabilities = {}
-
-  for k, v in target_class_frequencies.items():
-    probabilities[k] = v / len(dataset)
-
-  return probabilities
-
-
-def get_target_class_frequencies(dataset):
-  target_class_frequencies = {}
-  
-  for d in dataset:
-    for k, v in d.items():
-      if k != "Class":
-        continue
-
-      if v not in target_class_frequencies:
-        target_class_frequencies[v] = 0
-
-      target_class_frequencies[v] += 1
-
-  return target_class_frequencies
-
-
-def is_dataset_empty(dataset):
-  return not dataset
-
-
-def is_dataset_positive(dataset):
-  for d in dataset:
-    if "Class" not in d:
-      continue
-
-    if d["Class"] == 0:
-      return False
-
-  return True
-
-
-def is_dataset_negative(dataset):
-  for d in dataset:
-    if "Class" not in d:
-      continue
-
-    if d["Class"] == 1:
-      return False
-
-  return True
-
-
-def get_all_attributes(dataset):
-  all_attributes = set()
-
-  for d in dataset:
-    for k in d:
-      if k == "Class":
-        continue
-      
-      all_attributes.add(k)
-
-  return list(all_attributes)
-
-
-def get_best_attribute_by_max_information_gain(dataset):
-  attributes = get_all_attributes(dataset)
-
-  best_attribute = ""
-  best_attribute_information_gain = -1
-
-  for a in attributes:
-    temp = get_information_gain(dataset, a)
-
-    if temp > best_attribute_information_gain:
-      best_attribute = a
-      best_attribute_information_gain = temp
-  
-  return best_attribute
-
-
 def get_decision_tree(ptr, dataset):
   if is_dataset_empty(dataset):
     return None
@@ -193,3 +77,40 @@ def get_decision_tree(ptr, dataset):
     get_decision_tree(ptr.children[branch], s)
   
   return ptr
+
+
+def get_best_attribute_by_max_information_gain(dataset):
+  attributes = get_all_attributes(dataset)
+
+  best_attribute = ""
+  best_attribute_information_gain = -1
+
+  for a in attributes:
+    temp = get_information_gain(dataset, a)
+
+    if temp > best_attribute_information_gain:
+      best_attribute = a
+      best_attribute_information_gain = temp
+  
+  return best_attribute
+
+
+def get_information_gain(dataset, attribute):
+  sub_dataset = get_sub_datasets_by_attribute(dataset, attribute)
+  parent_entropy = get_entropy(dataset)
+  child_entropy = 0
+
+  for s in sub_dataset:
+    child_entropy += (len(s) / len(dataset)) * get_entropy(s)
+  
+  return parent_entropy - child_entropy
+
+
+def get_entropy(dataset):
+  target_class_probabilities = get_target_class_probabilities(dataset)
+  H = 0
+
+  for _, v in target_class_probabilities.items():
+    H += -1 * v * math.log2(v)
+
+  return H
