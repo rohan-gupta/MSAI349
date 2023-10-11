@@ -46,32 +46,33 @@ def evaluate(node, example):
   Takes in a tree and one example.  Returns the Class value that the tree
   assigns to the example.
   '''
-
-  while node.label != "+" and node.label != "-":
+  
+  while node != None and node.children != {}:
     branch = example[node.label]
     node = node.children[branch]
 
-  return 1 if node.label == "+" else 0
+  return node.label
 
 
 def get_decision_tree(ptr, dataset):
+  
   if is_dataset_empty(dataset):
     return None
 
-  if is_dataset_positive(dataset):
-    ptr.label = "+"
-    return ptr
-
-  if is_dataset_negative(dataset):
-    ptr.label = "-"
+  if get_entropy(dataset) == 0:
+    ptr.label = str(dataset[0]["Class"])
     return ptr
 
   attribute = get_best_attribute_by_max_information_gain(dataset)
   sub_dataset_by_attribute = get_sub_datasets_by_attribute(dataset, attribute)
   
-  ptr.label = attribute
+  if attribute == "":
+    ptr.label = get_majority_class(dataset)
+    return ptr
 
-  for s in sub_dataset_by_attribute:
+  ptr.label = attribute
+    
+  for s in sub_dataset_by_attribute:  
     branch = s[0][attribute]
     ptr.children[branch] = Node("", {})
     get_decision_tree(ptr.children[branch], s)
@@ -81,16 +82,18 @@ def get_decision_tree(ptr, dataset):
 
 def get_best_attribute_by_max_information_gain(dataset):
   attributes = get_all_attributes(dataset)
-
   best_attribute = ""
   best_attribute_information_gain = -1
 
   for a in attributes:
     temp = get_information_gain(dataset, a)
-
+    
     if temp > best_attribute_information_gain:
       best_attribute = a
       best_attribute_information_gain = temp
+  
+  if best_attribute_information_gain == 0:
+    return get_non_trivial_attribute(dataset)
   
   return best_attribute
 
