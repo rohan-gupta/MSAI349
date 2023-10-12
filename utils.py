@@ -27,14 +27,13 @@ def get_target_class_frequencies(dataset):
   target_class_frequencies = {}
   
   for d in dataset:
-    for k, v in d.items():
-      if k != "Class":
-        continue
+    if "Class" not in d:
+      continue
 
-      if v not in target_class_frequencies:
-        target_class_frequencies[v] = 0
+    if d["Class"] not in target_class_frequencies:
+      target_class_frequencies[d["Class"]] = 0
 
-      target_class_frequencies[v] += 1
+    target_class_frequencies[d["Class"]] += 1
 
   return target_class_frequencies
 
@@ -113,4 +112,24 @@ def get_non_trivial_attribute(dataset):
 
 
 def update_missing_attributes_with_majority_value(dataset):
-  pass
+  attributes = get_all_attributes(dataset)
+  
+  for a in attributes:
+    frequencies = {}
+    
+    for d in dataset:
+      if d[a] == "?":
+        continue
+
+      if d[a] not in frequencies:
+        frequencies[d[a]] = 0
+
+      frequencies[d[a]] += 1
+    
+    majority_value = max(frequencies, key = frequencies.get)
+    
+    for d in dataset:
+      if d[a] == "?":
+        d[a] = majority_value
+
+  return dataset
