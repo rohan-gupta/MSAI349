@@ -11,6 +11,7 @@ def get_avg_of_100(inFile):
     p_acc_of_validation = []
     p_acc_of_test = []
 
+
     data = parse.parse(inFile)
     data = utils.update_missing_attributes_with_majority_value(data)
     
