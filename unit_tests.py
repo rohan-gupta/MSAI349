@@ -1,4 +1,5 @@
-import ID3, parse, random
+
+import ID3, parse, random, utils
 import matplotlib.pyplot as plt
 
 def testID3AndEvaluate():
@@ -72,6 +73,9 @@ def testPruningOnHouseData(inFile):
 
   data = parse.parse(inFile)
   size_of_set = range(100)
+
+  data = utils.update_missing_attributes_with_majority_value(data)
+
   for i in range(100):
     random.shuffle(data)
     train = data[:len(data)//2]

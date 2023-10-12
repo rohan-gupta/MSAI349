@@ -35,7 +35,7 @@ def test(node, examples):
   for e in examples:
     label = evaluate(node, e)
     
-    if label == e["Class"]:
+    if str(label) == str(e["Class"]):
       correct_labels += 1
 
   return correct_labels / len(examples)
@@ -60,7 +60,7 @@ def get_decision_tree(ptr, dataset):
     return None
 
   if get_entropy(dataset) == 0:
-    ptr.label = str(dataset[0]["Class"])
+    ptr.label = get_majority_class(dataset)
     return ptr
 
   attribute = get_best_attribute_by_max_information_gain(dataset)
