@@ -1,4 +1,4 @@
-import ID3, parse, random
+import ID3, parse, random, utils
 
 def testID3AndEvaluate():
   data = [dict(a=1, b=0, Class=1), dict(a=1, b=1, Class=1)]
@@ -61,6 +61,7 @@ def testPruningOnHouseData(inFile):
   withPruning = []
   withoutPruning = []
   data = parse.parse(inFile)
+  data = utils.update_missing_attributes_with_majority_value(data)
   for i in range(100):
     random.shuffle(data)
     train = data[:len(data)//2]
