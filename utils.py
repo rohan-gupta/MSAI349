@@ -1,4 +1,7 @@
 def get_sub_datasets_by_attribute(dataset, attribute):
+  if attribute == "":
+    return dataset
+  
   sub_datasets = {}
 
   for d in dataset:

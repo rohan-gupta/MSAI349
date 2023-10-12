@@ -3,6 +3,9 @@ import math
 
 from utils import *
 
+THRESHOLD_ENTROPY = 0.05
+THRESHOLD_DATASET_SIZE = 3
+
 def ID3(examples, default):
   '''
   Takes in an array of examples, and returns a tree (an instance of Node) 
@@ -59,7 +62,7 @@ def get_decision_tree(ptr, dataset):
   if is_dataset_empty(dataset):
     return None
 
-  if get_entropy(dataset) == 0:
+  if get_entropy(dataset) <= THRESHOLD_ENTROPY or len(dataset) <= THRESHOLD_DATASET_SIZE:
     ptr.label = get_majority_class(dataset)
     return ptr
 
