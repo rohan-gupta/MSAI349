@@ -1,38 +1,31 @@
-from node import Node
-import math
-from utils import *
-import ID3
+# from node import Node
+# import math
+# from utils import *
+# import ID3
+# def prune_tree(node, examples, subtrees):
+  
+#   if node is None:
+#     return subtrees
 
-def prune(node, examples):
-    # Reduced Error Pruning
-    og_cost = ID3.get_entropy(node, examples)
-    
-    node = prune_tree(node, examples, og_cost)
-    
-    return node
+#   original_children = node.children
 
-def prune_tree(node, examples, og_cost):
-    if node is None or node.is_leaf():
-        return node
-    
-    original_node = node
-    original_children = node.children
-    
-    node.make_leaf(get_majority_class(examples))  
-    
-    pruning_cost = ID3.get_entropy(node, examples)
-    alpha = (og_cost - pruning_cost) / (len(examples) - 1)
-    
-    if alpha >= 0:
-        return node  
-    
-    best_subtree = None
-    for branch in original_children:
-        child_subtree = prune_tree(original_children[branch], examples, og_cost)
-        if child_subtree:
-            if best_subtree is None:
-                best_subtree = Node("", {})
-            best_subtree.children[branch] = child_subtree
-    
-    return best_subtree
+#   valid = examples[len(examples)//2:3*len(examples)//4]
+
+#   og_acc = ID3.test(node, valid)
+#   print("does this test work??")
+#   node.make_leaf()  # Convert the node into a leaf
+#   pruning_acc = ID3.test(node, valid)  # Calculate the cost on the validation set
+#   print("how about this one?")
+#   # If pruning is better, keep the leaf node; otherwise, revert to the original children
+#   if pruning_acc >= og_acc:
+#       subtrees.append(node)
+#       node.make_leaf()  # Make the node a leaf by removing its children
+
+#   # Recursively prune child nodes
+#   for branch in original_children:
+#       prune_tree(original_children[branch], valid, subtrees)
+
+#   return subtrees
+
+
 
