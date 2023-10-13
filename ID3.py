@@ -26,6 +26,17 @@ def prune(node, examples):
   to improve accuracy on the validation data; the precise pruning strategy is up to you.
   '''
 
+  subtrees = []
+
+  forest = prune_tree(node, examples, subtrees)
+
+  if not forest:
+    return node
+
+  best_subtree = max(forest, key = lambda subtree: test(subtree, examples))
+
+  return best_subtree
+
 
 def test(node, examples):
   '''

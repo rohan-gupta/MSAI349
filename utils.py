@@ -1,3 +1,7 @@
+import ID3
+import math
+import random, utils
+
 def get_sub_datasets_by_attribute(dataset, attribute):
   if attribute == "":
     return dataset
@@ -136,3 +140,74 @@ def update_missing_attributes_with_majority_value(dataset):
         d[a] = majority_value
 
   return dataset
+
+
+
+'''
+
+#node is a fully trained tree.
+def prune_tree(node, examples):
+    if node is None:
+        return
+
+    valid = examples[len(examples)//2:3*len(examples)//4]
+
+    # Attempt to prune the node
+    og_cost = get_entropy(examples)
+    original_children = node.children
+    print("TEST", original_children)
+
+    #og_cost works
+
+    node.make_leaf()  # Convert the node into a leaf
+    pruning_cost = get_entropy(valid)  # Calculate the cost on validation set
+
+    print("diff", og_cost - pruning_cost)
+
+    #og and pruning cost functions work and are different, but the difference is going to 0 
+    alpha = (og_cost - pruning_cost) / (len(valid) - 1)
+    #AS OF NOW, ALPHA IS ALWAYS 0.
+
+    # If pruning is better, keep the leaf node; otherwise, revert to the original children
+    if alpha <= 0:
+        node.children = original_children
+
+    # Recursively prune child nodes
+    for branch in original_children:
+      prune_tree(original_children[branch], examples)
+'''
+
+
+def prune_tree(node, examples, subtrees):
+  
+  if node is None:
+    return subtrees
+
+  original_children = node.children
+
+  valid = examples[len(examples)//2:3*len(examples)//4]
+  valid = examples 
+  if len(valid) >5 :
+
+    og_acc = ID3.test(node, valid)
+
+    node.make_leaf(node.label)  # Convert the node into a leaf
+    pruning_acc = ID3.test(node, valid)  # Calculate the cost on the validation set
+    # print(len(valid))
+    # If pruning is better, keep the leaf node; otherwise, revert to the original children
+    if pruning_acc >= og_acc:
+        subtrees.append(node)
+        node.make_leaf(node.label)  # Make the node a leaf by removing its children
+
+  # Recursively prune child nodes
+  if len(valid) > 5:
+    for branch in original_children:
+      prune_tree(original_children[branch], valid, subtrees)
+        
+
+  return subtrees
+
+
+
+
+

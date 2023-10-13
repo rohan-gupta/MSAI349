@@ -38,7 +38,7 @@ def get_avg_of_100(inFile):
 
     plt.xlabel('Size of Set')
     plt.ylabel('Accuracy')
-    plt.title('Training and Validation Accuracy vs. Size Of Set')
+    plt.title('Test Accuracy With Pruning vs Without Pruning')
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -55,7 +55,7 @@ def cal_avg_of_100(data):
     pruning_training_100 = []
     pruning_validation_100 = []
 
-    train_val = data[:len(data)//4]
+    train_val = data[:3*len(data)//4]
     test = data[3*len(data)//4:]
 
     for i in range(100):
@@ -66,6 +66,7 @@ def cal_avg_of_100(data):
         
     
         tree = ID3.ID3(train, 'democrat')
+        # print(tree.children)
         acc = ID3.test(tree, train)
         training_100.append(acc)
         acc = ID3.test(tree, valid)
@@ -74,12 +75,13 @@ def cal_avg_of_100(data):
         acc = ID3.test(tree, test)
         # print("test accuracy: ",acc)
     
-        ID3.prune(tree, valid)
+        a = ID3.prune(tree, valid)
+        b = tree
         acc = ID3.test(tree, train)
-        # print("pruned tree train accuracy: ",acc)
+        print("pruned tree train accuracy: ",acc)
         pruning_training_100.append(acc)
         acc = ID3.test(tree, valid)
-        # print("pruned tree validation accuracy: ",acc)
+        print("pruned tree validation accuracy: ",acc)
         pruning_validation_100.append(acc)
         acc = ID3.test(tree, test)
         # print("pruned tree test accuracy: ",acc)
