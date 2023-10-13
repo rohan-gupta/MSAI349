@@ -35,6 +35,9 @@ def prune(node, examples):
 
   best_subtree = max(forest, key = lambda subtree: test(subtree, examples))
 
+  if(best_subtree.children == {}):
+    return node
+
   return best_subtree
 
 
