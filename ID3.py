@@ -3,8 +3,8 @@ import math
 
 from utils import *
 
-THRESHOLD_ENTROPY = 0.05
-THRESHOLD_DATASET_SIZE = 3
+THRESHOLD_ENTROPY = 0.1
+THRESHOLD_DATASET_SIZE = 2
 
 def ID3(examples, default):
   '''
@@ -13,6 +13,7 @@ def ID3(examples, default):
   and the target class variable is a special attribute with the name "Class".
   Any missing attributes are denoted with a value of "?"
   '''
+
   root = Node("", {})
 
   get_decision_tree(root, examples)
@@ -25,6 +26,24 @@ def prune(node, examples):
   Takes in a trained tree and a validation set of examples.  Prunes nodes in order
   to improve accuracy on the validation data; the precise pruning strategy is up to you.
   '''
+  if node.is_leaf:
+    return
+  
+  for _, child_node in node.children.items():
+    prune(child_node, examples)
+
+  pre_pruning_accuracy = test(node, examples)
+
+  node_children = node.children
+  
+  node.make_leaf()
+  post_pruning_accuracy = test(node, examples)
+
+  if post_pruning_accuracy >= pre_pruning_accuracy:
+    return
+  
+  node.is_leaf = False
+  node.children = node_children
 
   subtrees = []
 
@@ -63,8 +82,10 @@ def evaluate(node, example):
   Takes in a tree and one example.  Returns the Class value that the tree
   assigns to the example.
   '''
-  
-  while node != None and node.children != {}:
+  if not node:
+    return None
+
+  while not node.is_leaf:
     branch = example[node.label]
     node = node.children[branch]
 
@@ -78,6 +99,7 @@ def get_decision_tree(ptr, dataset):
 
   if get_entropy(dataset) <= THRESHOLD_ENTROPY or len(dataset) <= THRESHOLD_DATASET_SIZE:
     ptr.label = get_majority_class(dataset)
+    ptr.is_leaf = True
     return ptr
 
   attribute = get_best_attribute_by_max_information_gain(dataset)
@@ -85,6 +107,7 @@ def get_decision_tree(ptr, dataset):
   
   if attribute == "":
     ptr.label = get_majority_class(dataset)
+    ptr.is_leaf = True
     return ptr
 
   ptr.label = attribute
