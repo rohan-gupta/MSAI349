@@ -45,20 +45,6 @@ def prune(node, examples):
   node.is_leaf = False
   node.children = node_children
 
-  subtrees = []
-
-  forest = prune_tree(node, examples, subtrees)
-
-  if not forest:
-    return node
-
-  best_subtree = max(forest, key = lambda subtree: test(subtree, examples))
-
-  if(best_subtree.children == {}):
-    return node
-
-  return best_subtree
-
 
 def test(node, examples):
   '''
