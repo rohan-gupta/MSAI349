@@ -1,9 +1,7 @@
-
-import ID3, parse, random, utils
+import ID3, parse, random
 
 def testID3AndEvaluate():
   data = [dict(a=1, b=0, Class=1), dict(a=1, b=1, Class=1)]
-  # data = parse.parse("tennis.data")
   tree = ID3.ID3(data, 0)
   if tree != None:
     ans = ID3.evaluate(tree, dict(a=1, b=0))
@@ -60,12 +58,9 @@ def testID3AndTest():
 
 # inFile - string location of the house data file
 def testPruningOnHouseData(inFile):
-  data = parse.parse(inFile)
-
-  data = utils.update_missing_attributes_with_majority_value(data)
   withPruning = []
   withoutPruning = []
-
+  data = parse.parse(inFile)
   for i in range(100):
     random.shuffle(data)
     train = data[:len(data)//2]
@@ -80,7 +75,6 @@ def testPruningOnHouseData(inFile):
     acc = ID3.test(tree, test)
     print("test accuracy: ",acc)
   
-    print("\n\n")
     ID3.prune(tree, valid)
     acc = ID3.test(tree, train)
     print("pruned tree train accuracy: ",acc)
@@ -96,11 +90,4 @@ def testPruningOnHouseData(inFile):
   print(withPruning)
   print(withoutPruning)
   print("average with pruning",sum(withPruning)/len(withPruning)," without: ",sum(withoutPruning)/len(withoutPruning))
-
-
-
-
-if __name__ == "__main__":
-  # testID3AndEvaluate()
-  testPruningOnHouseData("house_votes_84.data")
-  # testID3AndEvaluate()
+  

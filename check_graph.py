@@ -4,13 +4,14 @@ import unit_tests, ID3, parse, random, utils
 
 def get_avg_of_100(inFile):
     set_of_size = range(10,300) #x-axis
+    
     acc_of_training = []
     acc_of_validation = []
     acc_of_test = []
+    
     p_acc_of_training = []
     p_acc_of_validation = []
     p_acc_of_test = []
-
 
     data = parse.parse(inFile)
     data = utils.update_missing_attributes_with_majority_value(data)
@@ -18,7 +19,9 @@ def get_avg_of_100(inFile):
     for setSize in set_of_size:
         print(setSize)
         random.shuffle(data)
+
         avg_train , avg_validation, avg_test, p_avg_train , p_avg_validation, p_avg_test  = cal_avg_of_100(data[:setSize])
+
         acc_of_training.append(avg_train)
         acc_of_validation.append(avg_validation)
         acc_of_test.append(avg_test)
@@ -29,12 +32,8 @@ def get_avg_of_100(inFile):
         
     
     plt.figure(figsize=(8, 5))
-    # plt.plot(set_of_size, acc_of_training, label='Training Accuracy')
-    # plt.plot(set_of_size, acc_of_validation, label='Validation Accuracy')
-    # plt.plot(set_of_size, p_acc_of_training, label='P_Training Accuracy')
-    # plt.plot(set_of_size, p_acc_of_validation, label='P_Validation Accuracy')
-    plt.plot(set_of_size, acc_of_test, label='Testing Accuracy Without Pruning') #Plot the testing result
-    plt.plot(set_of_size, p_acc_of_test, label='Testing Accuracy With Pruning') #Plot the testing result
+    plt.plot(set_of_size, acc_of_test, label='Testing Accuracy Without Pruning')
+    plt.plot(set_of_size, p_acc_of_test, label='Testing Accuracy With Pruning')
 
     plt.xlabel('Size of Set')
     plt.ylabel('Accuracy')
@@ -44,9 +43,7 @@ def get_avg_of_100(inFile):
     plt.show()
   
 
-
 def cal_avg_of_100(data):
-
     withPruning = []
     withoutPruning = []
 
@@ -63,7 +60,6 @@ def cal_avg_of_100(data):
         train = train_val[:2*len(train_val)//3]
         valid = train_val[2*len(train_val)//3 :] 
         random.shuffle(test)
-        
     
         tree = ID3.ID3(train, 'democrat')
         acc = ID3.test(tree, train)
