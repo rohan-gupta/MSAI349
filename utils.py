@@ -180,6 +180,9 @@ def prune_tree(node, examples, subtrees):
   if node is None:
     return subtrees
 
+  if not node.is_leaf():
+    return
+
   original_children = node.children
 
   valid = examples[len(examples)//2:3*len(examples)//4]
