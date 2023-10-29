@@ -1,4 +1,4 @@
-from HW2.starter import knn, read_data
+from ..starter import knn, read_data
 
 
 def test_knn():
