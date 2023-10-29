@@ -1,4 +1,4 @@
-from HW2.distance import euclidean, cosim
+from ..utils.distance import euclidean, cosim
 
 def test_euclidean():
     a = [1, 2, 3, 4, 5, 6]

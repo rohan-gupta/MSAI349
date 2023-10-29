@@ -1,8 +1,8 @@
 from HW2.starter import read_data, knn
 
 def get_knn_accuracy():
-    train_data = read_data("./data/train.csv")
-    test_data = read_data("./data/test.csv")
+    train_data = read_data("../data/train.csv")
+    test_data = read_data("../data/test.csv")
 
     predicted_labels = knn(train_data, test_data, "euclidean")
 
