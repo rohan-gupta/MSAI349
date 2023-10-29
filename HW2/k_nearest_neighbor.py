@@ -1,7 +1,7 @@
-import numpy as np 
-from .distances import euclidean_distances, manhattan_distances
+from .distance import euclidean, cosim
+from statistics import mode
 
-class KNearestNeighbor():    
+class KNearestNeighbor:
     def __init__(self, n_neighbors, distance_measure='euclidean', aggregator='mode'):
         """
         K-Nearest Neighbor is a straightforward algorithm that can be highly
@@ -41,9 +41,10 @@ class KNearestNeighbor():
                 neighbors. Can be one of 'mode', 'mean', or 'median'.
         """
         self.n_neighbors = n_neighbors
-
-        raise NotImplementedError()
-
+        self.distance_measure = distance_measure
+        self.aggregator = aggregator
+        self.features = []
+        self.targets = []
 
     def fit(self, features, targets):
         """Fit features, a numpy array of size (n_samples, n_features). For a KNN, this
@@ -57,9 +58,11 @@ class KNearestNeighbor():
             targets {[type]} -- Target labels for each data point, shape of (n_samples, 
                 n_dimensions).
         """
+        if len(features) != len(targets):
+            return ValueError("")
 
-        raise NotImplementedError()
-        
+        self.features = features
+        self.targets = targets
 
     def predict(self, features, ignore_first=False):
         """Predict from features, a numpy array of size (n_samples, n_features) Use the
@@ -83,4 +86,28 @@ class KNearestNeighbor():
             labels {np.ndarray} -- Labels for each data point, of shape (n_samples,
                 n_dimensions). This n_dimensions should be the same as n_dimensions of targets in fit function.
         """
-        raise NotImplementedError()
+        distances = []
+        example = features
+        label = None
+
+        for i, f in enumerate(self.features):
+            if self.distance_measure == "euclidean":
+                d = euclidean(f, example)
+
+            elif self.distance_measure == "cosim":
+                d = cosim(f, example)
+
+            distances.append({
+                "class": self.targets[i],
+                "distance": d,
+                "vectors": [f, example]
+            })
+
+        distances = sorted(distances, key=lambda x: x["distance"])
+
+        top_n_neighbors = [d["class"] for d in distances[:self.n_neighbors]]
+
+        if self.aggregator == "mode":
+            label = mode(top_n_neighbors)
+
+        return label
