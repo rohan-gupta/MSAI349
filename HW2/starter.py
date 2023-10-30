@@ -1,22 +1,19 @@
-from .model.k_nearest_neighbor import KNearestNeighbor
+from HW2.model.k_nearest_neighbor import KNearestNeighbor
+from HW2.model.kmeans import KMeans
 
 # returns a list of labels for the query dataset based upon labeled observations in the train dataset.
 # metric is a string specifying either "euclidean" or "cosim".  
 # All hyper-parameters should be hard-coded in the algorithm.
 def knn(train, query, metric):
-    labels = []
-    features = []
-    predicted_labels = []
-
-    for t in train:
-        labels.append(t[0] if isinstance(t[0], int) else int(t[0]))
-        features.append(t[1])
+    labels = train[:, 0]
+    features = train[:, 1:785]
 
     model = KNearestNeighbor(4, metric, "mode")
     model.fit(features, labels)
 
+    predicted_labels = []
     for q in query:
-        predicted_labels.append(model.predict(q[1]))
+        predicted_labels.append(model.predict(q))
 
     return predicted_labels
 
@@ -25,7 +22,17 @@ def knn(train, query, metric):
 # metric is a string specifying either "euclidean" or "cosim".  
 # All hyper-parameters should be hard-coded in the algorithm.
 def kmeans(train, query, metric):
-    return None
+    labels = train[:, 0]
+    features = train[:, 1:785]
+
+    model = KMeans(4, metric)
+    model.fit(features, labels)
+
+    # predicted_labels = []
+    # for q in query:
+    #     predicted_labels.append(model.predict(q))
+
+    return []
 
 def read_data(file_name):
     
