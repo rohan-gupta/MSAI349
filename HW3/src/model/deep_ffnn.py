@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import pickle
+from sklearn.metrics import f1_score
 
 from ..utils.dataset import split_X_y
 
@@ -40,6 +41,8 @@ def train(parameters, dataset_train, dataset_validation, dataset_name, path):
 
     loss_train_vals, loss_valid_vals = [], []
 
+    early_stopping_count = 50
+
     for epoch in range(epochs):
         outputs_train = model(X_train)
         loss_train = criterion(outputs_train, y_train)
@@ -56,6 +59,17 @@ def train(parameters, dataset_train, dataset_validation, dataset_name, path):
         loss_train_vals.append(loss_train.item())
         loss_valid_vals.append(loss_valid.item())
 
+        if len(loss_valid_vals) < 2:
+            continue
+
+        if early_stopping_count < 0:
+            print("Early stopping")
+            break
+
+        if loss_valid.item() - loss_valid_vals[-2] > 0.001:
+            print("Validation loss increasing warning -", 50 - early_stopping_count)
+            early_stopping_count -= 1
+
     path_model = path + "/model"
     path_loss = path + "/loss"
 
@@ -71,5 +85,5 @@ def test(test_dataset, model):
         validation_X, validation_y = split_X_y(test_dataset, "mnist")
 
         _, predicted_y = model(validation_X).max(1)
-
-        return (predicted_y == validation_y).sum().item() / len(validation_y), predicted_y
+        f1 = f1_score(validation_y, predicted_y, average='micro')
+        return (predicted_y == validation_y).sum().item() / len(validation_y), f1, predicted_y
