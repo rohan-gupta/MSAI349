@@ -14,9 +14,10 @@ def generate_metrics_for_q3(test_data):
     model.load_state_dict(torch.load("src/model/trained/q3/model"))
 
     _, y = split_X_y(test_data, "mnist")
-    accuracy, y_predicted = test(test_data, model)
+    accuracy, f1, y_predicted = test(test_data, model)
 
     generate_learning_curve(loss_values["train"], loss_values["valid"])
     generate_confusion_matrix(y, y_predicted)
 
     print("Test accuracy / Q3: ", accuracy)
+    print("F1 score / Q3: ", f1)

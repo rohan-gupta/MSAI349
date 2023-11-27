@@ -1,5 +1,4 @@
 import torch
-import pickle
 
 from ..simple_ffnn import SimpleNN, test
 from ...utils.dataset import split_X_y
@@ -12,8 +11,9 @@ def generate_metrics_for_q4(test_data):
     model.load_state_dict(torch.load("src/model/trained/q4/model"))
 
     _, y = split_X_y(test_data)
-    accuracy, y_predicted = test(test_data, model)
+    accuracy, f1, y_predicted = test(test_data, model)
 
     generate_confusion_matrix(y, y_predicted)
 
     print("Test accuracy / Q4: ", accuracy)
+    print("F1 score / Q4: ", f1)

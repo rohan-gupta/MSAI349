@@ -83,6 +83,7 @@ def classify_insurability():
         train,
         valid,
         "insurability",
+        False,
         "./src/model/trained/q1"
     )
 
@@ -102,7 +103,7 @@ def classify_mnist():
     # train
     parameters = {
         "input_size": 784,
-        "hidden_size": 100,
+        "hidden_size": 397,
         "output_size": 10,
         "epochs": 1000,
         "learning_rate": 0.001,
@@ -125,7 +126,7 @@ def classify_mnist_reg():
     train = read_mnist('src/data/mnist_train.csv')
     valid = read_mnist('src/data/mnist_valid.csv')
     test = read_mnist('src/data/mnist_test.csv')
-    # show_mnist('src/data/mnist_test.csv', 'pixels')
+    show_mnist('src/data/mnist_test.csv', 'pixels')
     
     # add a regularizer of your choice to classify_mnist()
 
@@ -136,7 +137,7 @@ def classify_mnist_reg():
         "output_size": 10,
         "epochs": 1000,
         "learning_rate": 0.001,
-        "weight_decay": 1e-5,
+        "weight_decay": 0.1,
     }
 
     deep_ffnn.train(
@@ -173,6 +174,7 @@ def classify_insurability_manual():
         train,
         valid,
         "insurability",
+        True,
         "./src/model/trained/q4"
     )
 
@@ -180,9 +182,9 @@ def classify_insurability_manual():
     
     
 def main():
-    # classify_insurability()
-    # classify_mnist()
-    # classify_mnist_reg()
+    classify_insurability()
+    classify_mnist()
+    classify_mnist_reg()
     classify_insurability_manual()
 
 

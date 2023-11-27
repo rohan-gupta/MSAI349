@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import pickle
+from sklearn.metrics import f1_score
 
 from ..utils.dataset import split_X_y
 
@@ -20,7 +21,7 @@ class SimpleNN(nn.Module):
         return x
 
 
-def train(parameters, dataset_training, dataset_validation, dataset_name, path):
+def train(parameters, dataset_training, dataset_validation, dataset_name, custom_optimizer=False, path=""):
     input_size = parameters["input_size"]
     hidden_size = parameters["hidden_size"]
     output_size = parameters["output_size"]
@@ -30,7 +31,10 @@ def train(parameters, dataset_training, dataset_validation, dataset_name, path):
 
     model = SimpleNN(input_size, hidden_size, output_size, bias)
     criterion = nn.NLLLoss()
-    optimizer = CustomSGD(model.parameters(), learning_rate)
+    if custom_optimizer:
+        optimizer = CustomSGD(model.parameters(), learning_rate)
+    else:
+        optimizer = optim.SGD(model.parameters, learning_rate)
 
     X_train, y_train = split_X_y(dataset_training, dataset_name)
     X_validation, y_validation = split_X_y(dataset_validation, dataset_name)
@@ -74,7 +78,8 @@ def test(test_dataset, model):
         validation_X, validation_y = split_X_y(test_dataset)
 
         _, predicted_y = model(validation_X).max(1)
-        return (predicted_y == validation_y).sum().item() / len(validation_y), predicted_y
+        f1 = f1_score(validation_y, predicted_y, average='micro')
+        return (predicted_y == validation_y).sum().item() / len(validation_y), f1, predicted_y
 
 
 def custom_softmax(x):
