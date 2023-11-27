@@ -20,7 +20,7 @@ class SimpleNN(nn.Module):
         return x
 
 
-def train(parameters, dataset_training, dataset_validation, dataset_name, path):
+def train(parameters, dataset_training, dataset_validation, dataset_name, custom_optimizer=False, path=""):
     input_size = parameters["input_size"]
     hidden_size = parameters["hidden_size"]
     output_size = parameters["output_size"]
@@ -30,7 +30,10 @@ def train(parameters, dataset_training, dataset_validation, dataset_name, path):
 
     model = SimpleNN(input_size, hidden_size, output_size, bias)
     criterion = nn.NLLLoss()
-    optimizer = CustomSGD(model.parameters(), learning_rate)
+    if custom_optimizer:
+        optimizer = CustomSGD(model.parameters(), learning_rate)
+    else:
+        optimizer = optim.SGD(model.parameters, learning_rate)
 
     X_train, y_train = split_X_y(dataset_training, dataset_name)
     X_validation, y_validation = split_X_y(dataset_validation, dataset_name)

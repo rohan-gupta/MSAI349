@@ -83,6 +83,7 @@ def classify_insurability():
         train,
         valid,
         "insurability",
+        False,
         "./src/model/trained/q1"
     )
 
@@ -173,6 +174,7 @@ def classify_insurability_manual():
         train,
         valid,
         "insurability",
+        True,
         "./src/model/trained/q4"
     )
 
